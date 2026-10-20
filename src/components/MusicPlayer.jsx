@@ -44,12 +44,27 @@ export default function MusicPlayer() {
     document.addEventListener("touchstart", playAudio);
     document.addEventListener("keydown", playAudio);
 
+    // Pause/resume listeners for RSVP voice note recording
+    const handleExternalPause = () => {
+      audio.pause();
+      setPlaying(false);
+    };
+
+    const handleExternalResume = () => {
+      audio.play().then(() => setPlaying(true)).catch(() => {});
+    };
+
+    window.addEventListener("wedding-pause-music", handleExternalPause);
+    window.addEventListener("wedding-resume-music", handleExternalResume);
+
     return () => {
       clearTimeout(showTimer);
       audio.pause();
       document.removeEventListener("click", playAudio);
       document.removeEventListener("touchstart", playAudio);
       document.removeEventListener("keydown", playAudio);
+      window.removeEventListener("wedding-pause-music", handleExternalPause);
+      window.removeEventListener("wedding-resume-music", handleExternalResume);
     };
   }, []);
 

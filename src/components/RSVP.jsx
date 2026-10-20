@@ -76,17 +76,22 @@ export default function RSVP() {
         setAudioUrl(URL.createObjectURL(blob));
         // Stop all microphone tracks
         stream.getTracks().forEach((track) => track.stop());
+        // Immediately resume background music as soon as recording finishes
+        window.dispatchEvent(new CustomEvent('wedding-resume-music'));
       };
 
       mediaRecorder.start();
       setIsRecording(true);
       setRecordingSeconds(0);
+      // Immediately pause background music while recording
+      window.dispatchEvent(new CustomEvent('wedding-pause-music'));
       timerRef.current = setInterval(() => {
         setRecordingSeconds((s) => s + 1);
       }, 1000);
     } catch (err) {
       console.error('Microphone access denied or unsupported:', err);
       setServerError('Unable to access microphone. Please allow microphone permissions in your browser.');
+      window.dispatchEvent(new CustomEvent('wedding-resume-music'));
     }
   };
 
@@ -95,6 +100,7 @@ export default function RSVP() {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       clearInterval(timerRef.current);
+      window.dispatchEvent(new CustomEvent('wedding-resume-music'));
     }
   };
 
@@ -105,6 +111,7 @@ export default function RSVP() {
       URL.revokeObjectURL(audioUrl);
       setAudioUrl(null);
     }
+    window.dispatchEvent(new CustomEvent('wedding-resume-music'));
   };
 
   const formatTime = (secs) => {
@@ -442,7 +449,14 @@ export default function RSVP() {
                         </div>
                       ) : (
                         <div className="space-y-2 flex flex-col items-center">
-                          <audio controls src={audioUrl} className="w-full max-w-xs h-10 mt-1" />
+                          <audio
+                            controls
+                            src={audioUrl}
+                            onPlay={() => window.dispatchEvent(new CustomEvent('wedding-pause-music'))}
+                            onPause={() => window.dispatchEvent(new CustomEvent('wedding-resume-music'))}
+                            onEnded={() => window.dispatchEvent(new CustomEvent('wedding-resume-music'))}
+                            className="w-full max-w-xs h-10 mt-1"
+                          />
                           <button
                             type="button"
                             onClick={clearRecording}
