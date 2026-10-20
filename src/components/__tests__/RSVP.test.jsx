@@ -18,6 +18,7 @@ describe('RSVP form validation', () => {
     await i18n.changeLanguage('en');
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({
       ok: true,
+      text: async () => JSON.stringify({ status: 'success' }),
       json: async () => ({ status: 'success' }),
     });
   });

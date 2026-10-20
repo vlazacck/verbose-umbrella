@@ -27,7 +27,7 @@ describe('SaveTheDateCalendar', () => {
     expect(screen.queryByRole('button', { name: /G\.C/i })).toBeNull();
   });
 
-  it('renders Tikimt 2019 with day 29 highlighted when Amharic is active', async () => {
+  it('renders Tikimt 2019 with day 28 highlighted when Amharic is active', async () => {
     await i18n.changeLanguage('am');
 
     render(
@@ -40,7 +40,7 @@ describe('SaveTheDateCalendar', () => {
     expect(screen.getByText('ቀኑን ያስቀምጡ')).toBeInTheDocument();
     const weddingHeart = screen.getByTitle('የሰርጋችን ቀን! 💍');
     expect(weddingHeart).toBeInTheDocument();
-    expect(weddingHeart).toHaveTextContent('29');
+    expect(weddingHeart).toHaveTextContent('28');
     // Ensure no manual toggle button exists
     expect(screen.queryByRole('button', { name: /E\.C/i })).toBeNull();
   });

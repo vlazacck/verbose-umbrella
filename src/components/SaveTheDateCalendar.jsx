@@ -7,7 +7,7 @@ export default function SaveTheDateCalendar({ className = '' }) {
   const isAmharic = i18n.language === 'am';
 
   // Controlled purely by language:
-  // Amharic -> Tikimt 29 (ጥቅምት 2019)
+  // Amharic -> Tikimt 28 (ጥቅምት 2019)
   // English -> Nov 07 (November 2026)
   const monthTitle = isAmharic ? 'ጥቅምት 2019' : 'November 2026';
   const saveTheDateText = isAmharic ? 'ቀኑን ያስቀምጡ' : 'Save the Date';
@@ -16,7 +16,7 @@ export default function SaveTheDateCalendar({ className = '' }) {
     ? ['እሁድ', 'ሰኞ', 'ማክሰ', 'ረቡዕ', 'ሐሙስ', 'ዓርብ', 'ቅዳሜ']
     : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  const targetDay = isAmharic ? 29 : 7;
+  const targetDay = isAmharic ? 28 : 7;
   const totalDays = 30;
   // Starting day index: both Nov 1, 2026 and Tikimt 1, 2019 start on Sunday (index 0)
   const startDayOffset = 0;
