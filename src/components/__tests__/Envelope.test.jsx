@@ -40,9 +40,9 @@ describe('Envelope component', () => {
     const button = screen.getByRole('button', { name: /tap to open/i });
     fireEvent.click(button);
 
-    // Fast-forward through animation timers (openTimer is 3200ms)
+    // Fast-forward through the envelope opening timer.
     act(() => {
-      vi.advanceTimersByTime(3500);
+      vi.advanceTimersByTime(2000);
     });
 
     expect(handleOpen).toHaveBeenCalledTimes(1);

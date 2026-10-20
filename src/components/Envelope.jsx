@@ -26,12 +26,12 @@ export default function Envelope({ onOpening, onOpen }) {
       return;
     }
 
-    // Timer keeps the flap layer in sync with the slower opening sequence (~1.6s into sequence)
+    // Keep the flap layer in sync as it moves behind the letter.
     const flapTimer = window.setTimeout(() => {
       setFlapBehind(true);
-    }, 1600);
+    }, 750);
 
-    // Extended total open duration for a slower, graceful experience (5.5s total)
+    // Match the overlay fade so the hero appears as the envelope finishes opening.
     const openTimer = window.setTimeout(() => {
       if (onOpen) {
         onOpen();
@@ -40,7 +40,7 @@ export default function Envelope({ onOpening, onOpen }) {
           setOpening(false);
         }, 1500);
       }
-    }, 5500);
+    }, 2000);
 
     return () => {
       window.clearTimeout(flapTimer);
@@ -68,7 +68,7 @@ export default function Envelope({ onOpening, onOpen }) {
         }
         transition={
           opening
-            ? { duration: 5.5, times: [0, 0.72, 1], ease: [0.42, 0, 0.58, 1] }
+            ? { duration: 2, times: [0, 0.72, 1], ease: [0.42, 0, 0.58, 1] }
             : undefined
         }
         className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden px-3 py-5 sm:px-6 sm:py-8"
@@ -197,8 +197,8 @@ function EnvelopeScene({
             : { y: '0%' }
         }
         transition={{
-          delay: opening ? 0.65 : 0,
-          duration: 2.8,
+          delay: opening ? 0.3 : 0,
+          duration: 1.4,
           ease: [0.42, 0, 0.58, 1],
         }}
         className="pointer-events-none absolute inset-x-[6%] top-[8%] bottom-[6%] z-10 flex flex-col items-center justify-between overflow-hidden rounded-[18px] px-5 py-6 sm:inset-x-[7%] sm:top-[9%] sm:bottom-[6%] sm:px-10 sm:py-8"
@@ -302,8 +302,8 @@ function EnvelopeScene({
         initial={{ rotateX: 0 }}
         animate={opening ? { rotateX: -180 } : { rotateX: 0 }}
         transition={{
-          delay: opening ? 0.3 : 0,
-          duration: 2.4,
+          delay: opening ? 0.15 : 0,
+          duration: 1.25,
           ease: [0.42, 0, 0.58, 1],
         }}
         onUpdate={(latest) => {
