@@ -1,4 +1,4 @@
-# Bethelhem & Ermias — Digital Wedding Invitation
+# Ermias & Bethelhem — Digital Wedding Invitation
 
 A beautiful single-page, bilingual (English / Amharic) digital wedding invitation built with
 Vite + React + Tailwind CSS. Inspired by the format of scroll-driven wedding
@@ -14,7 +14,7 @@ decorative falling petals and floral artwork.
 > commercially-licensed wedding invitation (paid Tilda template, real names, real
 > venue). This project does not reuse its text, images, or exact layout/animation
 > code — it's a new build in a similar *format* with placeholder names
-> (Bethelhem & Ermias) that you're free to swap for your own couple.
+> (Ermias & Bethelhem) that you're free to swap for your own couple.
 
 ## Quick start
 

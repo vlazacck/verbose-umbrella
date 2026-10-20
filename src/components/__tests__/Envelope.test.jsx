@@ -16,7 +16,7 @@ describe('Envelope component', () => {
     vi.useRealTimers();
   });
 
-  it('renders the ivory-and-gold envelope with B & E and tap to open label', () => {
+  it('renders the ivory-and-gold envelope with E & B and tap to open label', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <Envelope onOpen={() => { }} />

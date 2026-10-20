@@ -4,20 +4,20 @@
     "description": "Join Ermias and Bethelhem as they are joined in Christ. Wedding celebration invitation with schedule, location, and RSVP."
   },
   "header": {
-    "brand": "B & E"
+    "brand": "E & B"
   },
   "langToggle": {
     "en": "EN",
     "am": "አማ"
   },
   "envelope": {
-    "monogram": "B & E",
+    "monogram": "E & B",
     "tapToOpen": "Tap to open"
   },
   "hero": {
     "eyebrow": "Wedding Day",
     "date": "07/11/26",
-    "names": "Bethelhem\n&\nErmias",
+    "names": "Ermias\n&\nBethelhem",
     "scrollDown": "Scroll down",
     "verse": "\u201cTherefore what God has joined together, let no one separate.\u201d — Mark 10:9"
   },
@@ -70,7 +70,7 @@
     "sealLabel": "RSVP",
     "clickToOpen": "Click to open",
     "farewell": "Hope to see you there!",
-    "coupleNames": "Bethelhem and Ermias",
+    "coupleNames": "Ermias and Bethelhem",
     "formTitle": "Will you join us?",
     "nameLabel": "Full name",
     "namePlaceholder": "Your full name",
@@ -139,8 +139,8 @@
   "footer": {
     "verse": "“And over all these virtues put on love, which binds them all together in perfect unity.” — Colossians 3:14",
     "contactTitle": "Questions?",
-    "contactEmail": "bethelhem.ermias.wedding@example.com",
-    "copyright": "© 2026 Bethelhem & Ermias.",
+    "contactEmail": "ermias.bethelhem.wedding@example.com",
+    "copyright": "© 2026 Ermias & Bethelhem.",
     "social": "Follow our journey"
   }
 }

@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import TornEdge from './TornEdge.jsx';
 
-// ⚠️ PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyytCJuwINzNHOyuTDDPMlF9452CwhN_nYmUMg6fGzMoUqGI0Vq3E-UZFS7He3U33QM/exec';
 
 const initialForm = { name: '', phone: '', attending: 'yes', guests: 1, message: '', website: '' };
@@ -14,13 +13,125 @@ export default function RSVP() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
+  const [serverError, setServerError] = useState('');
+
+  // Audio Recording States (Strictly Microphone Only)
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [audioBlob, setAudioBlob] = useState(null);
+  const [audioUrl, setAudioUrl] = useState(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const timerRef = useRef(null);
+
+  const getSupportedMimeType = () => {
+    const types = [
+      'audio/webm;codecs=opus',
+      'audio/webm',
+      'audio/mp4',
+      'audio/ogg;codecs=opus',
+      'audio/wav',
+    ];
+    for (const type of types) {
+      if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(type)) {
+        return type;
+      }
+    }
+    return '';
+  };
+
+  const startRecording = async () => {
+    setServerError('');
+
+    // Browsers disable navigator.mediaDevices on plain http:// IP addresses (like http://172.20.10.3)
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setServerError(
+        'Microphone access requires an HTTPS connection (https://) or localhost. Please open the https:// link to record.'
+      );
+      return;
+    }
+
+    try {
+      // Strictly audio: true, video: false
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      const mimeType = getSupportedMimeType();
+      const mediaRecorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        clearInterval(timerRef.current);
+        const finalMime = (mediaRecorder.mimeType || mimeType || 'audio/webm').split(';')[0];
+        const blob = new Blob(audioChunksRef.current, { type: finalMime });
+        setAudioBlob(blob);
+        setAudioUrl(URL.createObjectURL(blob));
+        // Stop all microphone tracks
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingSeconds(0);
+      timerRef.current = setInterval(() => {
+        setRecordingSeconds((s) => s + 1);
+      }, 1000);
+    } catch (err) {
+      console.error('Microphone access denied or unsupported:', err);
+      setServerError('Unable to access microphone. Please allow microphone permissions in your browser.');
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      clearInterval(timerRef.current);
+    }
+  };
+
+  const clearRecording = () => {
+    setAudioBlob(null);
+    setRecordingSeconds(0);
+    if (audioUrl) {
+      URL.revokeObjectURL(audioUrl);
+      setAudioUrl(null);
+    }
+  };
+
+  const formatTime = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  };
+
+  const blobToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = String(reader.result || '');
+        const base64String = result.includes(',') ? result.split(',')[1] : result;
+        resolve(base64String);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
 
   const validate = () => {
     const next = {};
     if (!form.name.trim()) next.name = t('rsvp.requiredField', 'Required');
     if (!form.phone.trim()) {
       next.phone = t('rsvp.requiredField', 'Required');
-    } else if (!/^[+()\d\s-]{7,}$/.test(form.phone.trim())) {
+    } else if (!/^[+()\d\s-]{7,20}$/.test(form.phone.trim())) {
       next.phone = t('rsvp.invalidPhone', 'Please enter a valid phone number');
     }
     return next;
@@ -33,8 +144,8 @@ export default function RSVP() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setServerError('');
 
-    // Honeypot for spam bots
     if (form.website) {
       setStatus('success');
       return;
@@ -47,20 +158,43 @@ export default function RSVP() {
     setStatus('submitting');
 
     try {
-      const response = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: {
-          // 'text/plain' bypasses CORS preflight restrictions on Google Apps Script
-          'Content-Type': 'text/plain',
-        },
-        body: JSON.stringify(form),
-      });
+      let audioBase64 = null;
+      let audioMimeType = null;
+      let recording = null;
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form to Google Sheets');
+      if (audioBlob) {
+        audioBase64 = await blobToBase64(audioBlob);
+        audioMimeType = (audioBlob.type || 'audio/webm').split(';')[0];
+        recording = {
+          dataBase64: audioBase64,
+          mimeType: audioMimeType,
+        };
       }
 
-      const result = await response.json();
+      const payload = {
+        ...form,
+        audioBase64,
+        audioMimeType,
+        recording,
+      };
+
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const textResult = await response.text();
+      let result;
+      try {
+        result = JSON.parse(textResult);
+      } catch (parseErr) {
+        console.error('Non-JSON response from Apps Script:', textResult);
+        throw new Error('Server returned an unexpected response. Make sure you deployed a New Version in Google Apps Script.');
+      }
 
       if (result.status === 'success') {
         setStatus('success');
@@ -80,13 +214,16 @@ export default function RSVP() {
             // ignore storage errors
           }
         }
-        setForm(initialForm); // Reset form values on success
+        setForm(initialForm);
+        clearRecording();
       } else {
         console.error('Apps Script API Error:', result.message);
+        setServerError(result.message || 'Apps Script returned an error.');
         setStatus('error');
       }
     } catch (err) {
       console.error('Network/Fetch Error:', err);
+      setServerError(err.message || 'Network error while submitting RSVP.');
       setStatus('error');
     }
   };
@@ -113,18 +250,14 @@ export default function RSVP() {
       `}</style>
 
       <section id="rsvp" className="relative bg-white px-4 sm:px-6 pt-24 sm:pt-28 pb-24 sm:pb-28 text-center overflow-hidden">
-        {/* Top-right corner flower strictly pinned to top-right corner */}
-       {/* Top-right corner flower */}
-{/* Top-right corner flower */}
-<img
-  src="/assets/Rightflower.webp"
-  alt=""
-  aria-hidden="true"
-  className="absolute top-0 right-0 w-[120px] sm:w-[145px] md:w-[165px] h-auto opacity-90 z-[50] rsvp-flower-tr pointer-events-none"
-  style={{ marginTop: '26px' }}
-/>
+        <img
+          src="/assets/Rightflower.webp"
+          alt=""
+          aria-hidden="true"
+          className="absolute top-0 right-0 w-[120px] sm:w-[145px] md:w-[165px] h-auto opacity-90 z-[50] rsvp-flower-tr pointer-events-none"
+          style={{ marginTop: '26px' }}
+        />
 
-        {/* Bottom-left corner flower pinned to bottom-left corner above torn edge */}
         <img
           src="/assets/Leftflower.webp"
           alt=""
@@ -133,8 +266,6 @@ export default function RSVP() {
         />
 
         <div className="relative z-[40] mx-auto w-full" style={{ maxWidth: '640px' }}>
-
-          {/* Title */}
           <motion.h2
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -145,7 +276,6 @@ export default function RSVP() {
             {t('rsvp.formTitle', 'Will you join us?')}
           </motion.h2>
 
-          {/* Wax Seal Button */}
           <motion.button
             type="button"
             initial={{ opacity: 0, scale: 0.95, y: 16 }}
@@ -174,7 +304,7 @@ export default function RSVP() {
                 initial={{ height: 0, opacity: 0, marginTop: 0 }}
                 animate={{ height: 'auto', opacity: 1, marginTop: 24 }}
                 exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
                 className="max-w-md mx-auto overflow-hidden text-left relative z-[40]"
               >
                 {status === 'success' ? (
@@ -191,8 +321,6 @@ export default function RSVP() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} noValidate className="space-y-4 sm:space-y-5 bg-white/95 backdrop-blur-md p-6 sm:p-7 rounded-2xl border border-gold/30 shadow-xl">
-
-                    {/* Honeypot */}
                     <div className="hidden" aria-hidden="true">
                       <label htmlFor="website">Website</label>
                       <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" value={form.website} onChange={handleChange} />
@@ -228,7 +356,7 @@ export default function RSVP() {
                         autoComplete="tel"
                         value={form.phone}
                         onChange={handleChange}
-                        placeholder={t('rsvp.phonePlaceholder', ' 09XXXXXXXX')}
+                        placeholder={t('rsvp.phonePlaceholder', '09XXXXXXXX')}
                         aria-invalid={Boolean(errors.phone)}
                         aria-describedby={errors.phone ? 'phone-error' : undefined}
                         className="w-full rounded-md border border-gold/50 bg-white px-3 py-2.5 font-body text-sm sm:text-base text-ink focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-colors"
@@ -285,16 +413,56 @@ export default function RSVP() {
                       />
                     </div>
 
-                    {status === 'error' && (
-                      <p role="alert" className="text-xs sm:text-sm text-gold text-center">
-                        {t('rsvp.error', 'Something went wrong. Please try again.')}
+                    {/* Voice Message Recorder Section (Pure Audio Only) */}
+                    <div className="rounded-xl border border-gold/40 bg-gold/5 p-3 sm:p-4 text-center">
+                      <p className="font-body text-xs sm:text-sm text-ink/80 mb-2 font-medium">
+                        🎙️ {t('rsvp.voiceMessageLabel', 'Voice Message (Optional)')}
+                      </p>
+
+                      {!audioBlob ? (
+                        <div>
+                          {!isRecording ? (
+                            <button
+                              type="button"
+                              onClick={startRecording}
+                              className="inline-flex items-center gap-2 rounded-full border border-gold/60 bg-white px-4 py-2 font-body text-xs sm:text-sm font-medium text-gold hover:bg-gold/10 transition-colors shadow-sm"
+                            >
+                              <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
+                              {t('rsvp.recordStart', 'Record Voice Note')}
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={stopRecording}
+                              className="inline-flex items-center gap-2 rounded-full border border-red-500 bg-red-500 px-4 py-2 font-body text-xs sm:text-sm font-medium text-white hover:bg-red-600 transition-colors shadow-sm animate-pulse"
+                            >
+                              ⏹ {t('rsvp.recordStop', 'Stop Recording')} ({formatTime(recordingSeconds)})
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="space-y-2 flex flex-col items-center">
+                          <audio controls src={audioUrl} className="w-full max-w-xs h-10 mt-1" />
+                          <button
+                            type="button"
+                            onClick={clearRecording}
+                            className="text-xs text-red-500 hover:underline pt-1"
+                          >
+                            {t('rsvp.recordDelete', 'Delete & Record Again')}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {(status === 'error' || serverError) && (
+                      <p role="alert" className="text-xs sm:text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2 text-center">
+                        {serverError || t('rsvp.error', 'Something went wrong. Please try again.')}
                       </p>
                     )}
 
-                    {/* Submit Button */}
                     <button
                       type="submit"
-                      disabled={status === 'submitting'}
+                      disabled={status === 'submitting' || isRecording}
                       className="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-full border border-gold bg-gold px-5 sm:px-6 py-2.5 sm:py-3 font-display text-xs sm:text-sm tracking-wide text-white shadow-md hover:bg-goldLight hover:text-royal transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       {status === 'submitting' ? t('rsvp.submitting', 'Sending...') : t('rsvp.submit', 'Send RSVP')}
@@ -306,7 +474,6 @@ export default function RSVP() {
           </AnimatePresence>
         </div>
 
-        {/* Torn Edge tearing into PhotoGallery (#F8F9FA) */}
         <TornEdge color="#F8F9FA" />
       </section>
     </>

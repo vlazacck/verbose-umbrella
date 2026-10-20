@@ -49,7 +49,7 @@ export default function Hero() {
         {/* Main sharp couple photo fills the hero on both mobile and desktop */}
         <img
           src="/assets/image1.webp"
-          alt="Bethelhem & Ermias"
+          alt="Ermias & Bethelhem"
           className="w-full h-full object-cover object-[50%_12%] md:object-center select-none relative z-[1]"
         />
 

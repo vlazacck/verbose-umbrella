@@ -4,20 +4,20 @@
     "description": "ኤርምያስ እና ቤተልሔም በክርስቶስ አንድ ሆነው የሚቀላቀሉበትን በዓል ይቀላቀሉ። የሰርግ ግብዣ ፕሮግራም፣ ቦታ እና የመገኘት ማረጋገጫ ያካትታል።"
   },
   "header": {
-    "brand": "ቤ & ኤ"
+    "brand": "ኤ & ቤ"
   },
   "langToggle": {
     "en": "EN",
     "am": "አማ"
   },
   "envelope": {
-    "monogram": "ቤ & ኤ",
+    "monogram": "ኤ & ቤ",
     "tapToOpen": "ለመክፈት ይንኩ"
   },
   "hero": {
     "eyebrow": "የሰርግ ቀን",
     "date": "29/02/19",
-    "names": "ቤተልሔም\nእና\nኤርምያስ",
+    "names": "ኤርምያስ\nእና\nቤተልሔም",
     "scrollDown": "ወደ ታች ይውረዱ",
     "verse": "«እግዚአብሔር ያጣመረውን ሰው አይለያየው።» — ማርቆስ 10፥9"
   },
@@ -70,7 +70,7 @@
     "sealLabel": "የመገኘት ማረጋገጫ",
     "clickToOpen": "ለመክፈት ይጫኑ",
     "farewell": "እዚያ እናያችኋለን ብለን ተስፋ እናደርጋለን!",
-    "coupleNames": "ቤተልሔም እና ኤርምያስ",
+    "coupleNames": "ኤርምያስ እና ቤተልሔም",
     "formTitle": "ይቀላቀሉናል?",
     "nameLabel": "ሙሉ ስም",
     "namePlaceholder": "ሙሉ ስምዎን ያስገቡ",
@@ -139,8 +139,8 @@
   "footer": {
     "verse": "«ከሁሉም በላይ ፍጹም የሚያስተሳስር ፍቅርን ልበሱ።» — ቆላስይስ 3፥14",
     "contactTitle": "ጥያቄ አለዎት?",
-    "contactEmail": "bethelhem.ermias.wedding@example.com",
-    "copyright": "© 2026 ቤተልሔም እና ኤርምያስ።",
+    "contactEmail": "ermias.bethelhem.wedding@example.com",
+    "copyright": "© 2026 ኤርምያስ እና ቤተልሔም።",
     "social": "ጉዟችንን ይከታተሉ"
   }
 }

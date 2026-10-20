@@ -8,42 +8,42 @@ const DEFAULT_IMAGES = [
   {
     id: 2,
     src: '/assets/image2.webp',
-    alt: 'Bethelhem and Ermias cherished moment 2',
+    alt: 'Ermias and Bethelhem cherished moment 2',
   },
   {
     id: 3,
     src: '/assets/image3.webp',
-    alt: 'Bethelhem and Ermias cherished moment 3',
+    alt: 'Ermias and Bethelhem cherished moment 3',
   },
   {
     id: 5,
     src: '/assets/image5.webp',
-    alt: 'Bethelhem and Ermias cherished moment 5',
+    alt: 'Ermias and Bethelhem cherished moment 5',
   },
   {
     id: 6,
     src: '/assets/image6.webp',
-    alt: 'Bethelhem and Ermias cherished moment 6',
+    alt: 'Ermias and Bethelhem cherished moment 6',
   },
   {
     id: 7,
     src: '/assets/image7.webp',
-    alt: 'Bethelhem and Ermias cherished moment 7',
+    alt: 'Ermias and Bethelhem cherished moment 7',
   },
   {
     id: 8,
     src: '/assets/image8.webp',
-    alt: 'Bethelhem and Ermias cherished moment 8',
+    alt: 'Ermias and Bethelhem cherished moment 8',
   },
   {
     id: 9,
     src: '/assets/image9 (2).webp',
-    alt: 'Bethelhem and Ermias cherished moment 9',
+    alt: 'Ermias and Bethelhem cherished moment 9',
   },
   {
     id: 10,
     src: '/assets/image10.webp',
-    alt: 'Bethelhem and Ermias cherished moment 10',
+    alt: 'Ermias and Bethelhem cherished moment 10',
   },
 ];
 

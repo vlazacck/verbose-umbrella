@@ -322,7 +322,7 @@ export default function Wishes() {
 
                     {/* Optional date or heart signet */}
                     <div className="mt-4 pt-3 border-t border-gold/20 flex items-center justify-between text-xs text-ink/80 font-body">
-                      <span>{item.date || 'Bethelhem & Ermias'}</span>
+                      <span>{item.date || 'Ermias & Bethelhem'}</span>
                       <span className="text-gold text-sm">❧</span>
                     </div>
                   </div>

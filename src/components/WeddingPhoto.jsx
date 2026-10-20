@@ -61,7 +61,7 @@ export default function WeddingPhoto({
       >
         <img
           src={src}
-          alt="Bethelhem and Ermias"
+          alt="Ermias and Bethelhem"
           loading="eager"
           onError={(e) => {
             if (e.target.src !== window.location.origin + '/assets/wedding.avif') {

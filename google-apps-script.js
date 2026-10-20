@@ -1,5 +1,5 @@
 /**
- * Google Apps Script for Bethelhem & Ermias Wedding Invitation
+ * Google Apps Script for Ermias & Bethelhem Wedding Invitation
  * 
  * ⚠️ IMPORTANT INSTRUCTIONS TO SYNC WISHES & RSVP:
  * 1. Open your Google Sheet (where RSVPs are collected).

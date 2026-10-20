@@ -240,7 +240,7 @@ function EnvelopeScene({
               textShadow: '0 1px 0 rgba(255, 255, 255, 0.95)',
             }}
           >
-            B &amp; E
+            E &amp; B
           </div>
 
           <div className="my-2 flex items-center gap-2.5 sm:my-3">
@@ -821,8 +821,8 @@ function Monogram({ id, mobile = false }) {
             filter: 'drop-shadow(0 1px 1px rgba(62, 43, 19, 0.45))',
           }}
         >
-          <span>B</span>
           <span>E</span>
+          <span>B</span>
         </div>
 
         <span className="absolute left-[9px] top-[24%] text-[10px] text-[#B89246]">❧</span>
@@ -904,7 +904,7 @@ function InvitationText({ formattedDate, mobile = false }) {
           textShadow: '0 1px 0 #FFFFFF',
         }}
       >
-        B &amp; E
+        E &amp; B
       </div>
       <div
         className="mt-1 whitespace-nowrap text-[11px] tracking-[0.18em] text-[#A78037] sm:text-[15px] sm:tracking-[0.22em]"
