@@ -7,47 +7,42 @@ import TornEdge from './TornEdge.jsx';
 const DEFAULT_IMAGES = [
   {
     id: 2,
-    src: '/assets/image2.avif',
+    src: '/assets/image2.webp',
     alt: 'Bethelhem and Ermias cherished moment 2',
   },
   {
     id: 3,
-    src: '/assets/image3.avif',
+    src: '/assets/image3.webp',
     alt: 'Bethelhem and Ermias cherished moment 3',
   },
   {
-    id: 4,
-    src: '/assets/image4.avif',
-    alt: 'Bethelhem and Ermias cherished moment 4',
-  },
-  {
     id: 5,
-    src: '/assets/image5.avif',
+    src: '/assets/image5.webp',
     alt: 'Bethelhem and Ermias cherished moment 5',
   },
   {
     id: 6,
-    src: '/assets/image6.avif',
+    src: '/assets/image6.webp',
     alt: 'Bethelhem and Ermias cherished moment 6',
   },
   {
     id: 7,
-    src: '/assets/image7.avif',
+    src: '/assets/image7.webp',
     alt: 'Bethelhem and Ermias cherished moment 7',
   },
   {
     id: 8,
-    src: '/assets/image8.avif',
+    src: '/assets/image8.webp',
     alt: 'Bethelhem and Ermias cherished moment 8',
   },
   {
     id: 9,
-    src: '/assets/image9.avif',
+    src: '/assets/image9 (2).webp',
     alt: 'Bethelhem and Ermias cherished moment 9',
   },
   {
     id: 10,
-    src: '/assets/image10.avif',
+    src: '/assets/image10.webp',
     alt: 'Bethelhem and Ermias cherished moment 10',
   },
 ];

@@ -104,7 +104,7 @@ export default function Countdown() {
         {/* Background images */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img
-            src="/assets/image7.avif"
+            src="/assets/image7.webp"
             alt=""
             aria-hidden="true"
             className="w-full h-full object-cover scale-105 blur-[6px] sm:blur-none select-none"
@@ -121,7 +121,7 @@ export default function Countdown() {
             }}
           >
             <img
-              src="/assets/image7.avif"
+              src="/assets/image7.webp"
               alt=""
               aria-hidden="true"
               className="w-full h-full object-cover select-none"
@@ -144,7 +144,7 @@ export default function Countdown() {
           src="/assets/Rightflower.webp"
           alt=""
           aria-hidden="true"
-          className="absolute top-1 sm:top-2 right-0 w-[120px] sm:w-[145px] md:w-[165px] h-auto opacity-90 z-[45] flower-swing-right pointer-events-none"
+          className="absolute top-7 sm:top-2 right-0 w-[120px] sm:w-[145px] md:w-[165px] h-auto opacity-90 z-[50] flower-swing-right pointer-events-none"
         />
 
         {/* Bottom-left flower neatly cornered above bottom torn edge */}
@@ -152,7 +152,7 @@ export default function Countdown() {
           src="/assets/Leftflower.webp"
           alt=""
           aria-hidden="true"
-          className="absolute bottom-2 sm:bottom-4 left-0 w-[120px] sm:w-[145px] md:w-[165px] h-auto opacity-90 z-[45] flower-swing-left pointer-events-none"
+          className="absolute bottom-6 sm:bottom-4 left-0 w-[120px] sm:w-[145px] md:w-[165px] h-auto opacity-90 z-[50] flower-swing-left pointer-events-none"
         />
 
         {/* Main content */}

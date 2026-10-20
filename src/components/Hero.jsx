@@ -40,7 +40,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none flex justify-center items-center">
         {/* Ambient blurred backdrop for widescreen/PC displays */}
         <img
-          src="/assets/image1.avif"
+          src="/assets/image1.webp"
           alt=""
           aria-hidden="true"
           className="hidden md:block absolute inset-0 w-full h-full object-cover blur-3xl scale-110 opacity-60 brightness-75 select-none"
@@ -48,7 +48,7 @@ export default function Hero() {
 
         {/* Main sharp couple photo fills the hero on both mobile and desktop */}
         <img
-          src="/assets/image1.avif"
+          src="/assets/image1.webp"
           alt="Bethelhem & Ermias"
           className="w-full h-full object-cover object-[50%_12%] md:object-center select-none relative z-[1]"
         />

@@ -23,7 +23,7 @@ describe('PhotoGallery Component', () => {
     expect(screen.getByRole('button', { name: /Next photo/i })).toBeInTheDocument();
   });
 
-  it('shows images 2 through 10 and excludes image 1', () => {
+  it('shows available images and excludes images 1 and 4', () => {
     const { container } = render(
       <I18nextProvider i18n={i18n}>
         <PhotoGallery />
@@ -31,12 +31,13 @@ describe('PhotoGallery Component', () => {
     );
 
     const imageSources = Array.from(container.querySelectorAll('img'), (image) => image.getAttribute('src'));
-    expect(imageSources).not.toContain('/assets/image1.avif');
-    expect(imageSources).toContain('/assets/image2.avif');
-    expect(imageSources).toContain('/assets/image9.avif');
-    expect(imageSources).toContain('/assets/image10.avif');
-    expect(screen.getByRole('tab', { name: /Go to photo 9/i })).toBeInTheDocument();
-    expect(screen.queryByRole('tab', { name: /Go to photo 10/i })).not.toBeInTheDocument();
+    expect(imageSources).not.toContain('/assets/image1.webp');
+    expect(imageSources).not.toContain('/assets/image4.webp');
+    expect(imageSources).toContain('/assets/image2.webp');
+    expect(imageSources).toContain('/assets/image9 (2).webp');
+    expect(imageSources).toContain('/assets/image10.webp');
+    expect(screen.getByRole('tab', { name: /Go to photo 8/i })).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: /Go to photo 9/i })).not.toBeInTheDocument();
   });
 
   it('advances to next slide when Next button is clicked', () => {
