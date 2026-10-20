@@ -64,7 +64,7 @@
   "telegram": {
     "title": "Send Us Your Photos!",
     "request": "We would love to see our wedding through your eyes! Please send us your pictures and videos from the celebration through our dedicated Telegram bot.",
-    "button": "@ermibetybot"
+    "button": "Send Us Pictures"
   },
   "rsvp": {
     "sealLabel": "RSVP",

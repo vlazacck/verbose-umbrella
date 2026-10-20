@@ -17,7 +17,7 @@ html {
 
 body {
   @apply bg-parchment text-ink font-body antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* When Amharic is active, use Balderasu as the primary ethiopic font */
@@ -114,7 +114,7 @@ select:focus-visible {
 
 /* Ensure the entire page never overflows horizontally */
 #root {
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 

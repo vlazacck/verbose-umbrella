@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n.js';
@@ -30,5 +30,23 @@ describe('Header language toggle', () => {
     expect(await screen.findByRole('button', { name: 'አማ' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('button', { name: 'EN' })).toHaveAttribute('aria-pressed', 'false');
     expect(i18n.language).toBe('am');
+  });
+
+  it('updates its scrolled appearance from the document scroll position', () => {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <Header />
+      </I18nextProvider>
+    );
+
+    act(() => {
+      Object.defineProperty(document.documentElement, 'scrollTop', {
+        configurable: true,
+        value: 30,
+      });
+      fireEvent.scroll(document);
+    });
+
+    expect(document.querySelector('header')).toHaveClass('bg-white/90');
   });
 });

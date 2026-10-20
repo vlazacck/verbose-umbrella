@@ -67,7 +67,7 @@ export default function MusicPlayer() {
   return (
     <>
       <audio ref={audioRef} preload="auto">
-        <source src="/assets/song.aac" type="audio/mp4" />
+        <source src="/assets/song.aac" type="audio/aac" />
       </audio>
 
       <AnimatePresence>

@@ -58,7 +58,7 @@ export default function Schedule() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#F8F9FA] px-4 sm:px-6 pt-10 sm:pt-12 pb-16 sm:pb-20 text-center"
+      className="relative bg-[#F8F9FA] px-4 sm:px-6 pt-10 sm:pt-12 pb-28 sm:pb-32 text-center"
     >
       {/* ── Title ── */}
       <motion.h2

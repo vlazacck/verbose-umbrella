@@ -26,12 +26,12 @@ export default function Envelope({ onOpening, onOpen }) {
       return;
     }
 
-    // Adjusted timer for slower opening sequence (~800ms into sequence)
+    // Timer keeps the flap layer in sync with the slower opening sequence (~1.6s into sequence)
     const flapTimer = window.setTimeout(() => {
       setFlapBehind(true);
-    }, 800);
+    }, 1600);
 
-    // Extended total open duration for a slower, graceful experience (3.2s total)
+    // Extended total open duration for a slower, graceful experience (5.5s total)
     const openTimer = window.setTimeout(() => {
       if (onOpen) {
         onOpen();
@@ -40,7 +40,7 @@ export default function Envelope({ onOpening, onOpen }) {
           setOpening(false);
         }, 1500);
       }
-    }, 3200);
+    }, 5500);
 
     return () => {
       window.clearTimeout(flapTimer);
@@ -68,7 +68,7 @@ export default function Envelope({ onOpening, onOpen }) {
         }
         transition={
           opening
-            ? { duration: 3.2, times: [0, 0.85, 1], ease: 'easeInOut' }
+            ? { duration: 5.5, times: [0, 0.72, 1], ease: [0.42, 0, 0.58, 1] }
             : undefined
         }
         className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden px-3 py-5 sm:px-6 sm:py-8"
@@ -197,9 +197,9 @@ function EnvelopeScene({
             : { y: '0%' }
         }
         transition={{
-          delay: opening ? 0.4 : 0,
-          duration: 1.6,
-          ease: [0.16, 1, 0.3, 1],
+          delay: opening ? 0.65 : 0,
+          duration: 2.8,
+          ease: [0.42, 0, 0.58, 1],
         }}
         className="pointer-events-none absolute inset-x-[6%] top-[8%] bottom-[6%] z-10 flex flex-col items-center justify-between overflow-hidden rounded-[18px] px-5 py-6 sm:inset-x-[7%] sm:top-[9%] sm:bottom-[6%] sm:px-10 sm:py-8"
         style={{
@@ -234,7 +234,7 @@ function EnvelopeScene({
 
         <div className="relative z-10 my-auto flex flex-col items-center text-center">
           <div
-            className="text-[28px] font-normal tracking-[0.22em] text-[#8F6824] sm:text-[42px]"
+            className="text-[36px] font-normal tracking-[0.22em] text-[#8F6824] sm:text-[54px]"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
               textShadow: '0 1px 0 rgba(255, 255, 255, 0.95)',
@@ -302,9 +302,9 @@ function EnvelopeScene({
         initial={{ rotateX: 0 }}
         animate={opening ? { rotateX: -180 } : { rotateX: 0 }}
         transition={{
-          delay: opening ? 0.15 : 0,
-          duration: 1.3,
-          ease: [0.4, 0, 0.2, 1],
+          delay: opening ? 0.3 : 0,
+          duration: 2.4,
+          ease: [0.42, 0, 0.58, 1],
         }}
         onUpdate={(latest) => {
           if (typeof latest.rotateX === 'number' && latest.rotateX <= -90 && !flapBehind) {
@@ -813,7 +813,7 @@ function Monogram({ id, mobile = false }) {
         <div
           className="flex flex-col items-center font-normal tracking-[0.06em]"
           style={{
-            fontSize: mobile ? '30px' : '36px',
+            fontSize: mobile ? '38px' : '46px',
             lineHeight: '0.95',
             background: 'linear-gradient(180deg, #FDF3D8 0%, #D8B56D 45%, #9E742B 100%)',
             WebkitBackgroundClip: 'text',
@@ -898,7 +898,7 @@ function InvitationText({ formattedDate, mobile = false }) {
         />
       </div>
       <div
-        className="text-[20px] tracking-[0.22em] text-[#9D762E] sm:text-[25px]"
+        className="text-[26px] tracking-[0.22em] text-[#9D762E] sm:text-[32px]"
         style={{
           fontFamily: "'Cormorant Garamond', Georgia, serif",
           textShadow: '0 1px 0 #FFFFFF',
@@ -949,13 +949,21 @@ function WaxSeal({ opening, size, mobile = false }) {
         initial={{ opacity: 1, scale: 1 }}
         animate={
           opening
-            ? { opacity: 0, scale: 0.8 }
-            : { opacity: 1, scale: [1, 1.015, 1] }
+            ? {
+                opacity: [1, 1, 0.9, 0],
+                scale: [1, 0.78, 1.12, 0.72],
+                rotate: [0, -5, 3, 0],
+              }
+            : { opacity: 1, scale: [1, 1.08, 1], y: [0, -3, 0] }
         }
         transition={
           opening
-            ? { duration: 0.4, ease: 'easeInOut' }
-            : { repeat: Infinity, duration: 4, ease: 'easeInOut' }
+            ? {
+                duration: 1.05,
+                times: [0, 0.16, 0.42, 1],
+                ease: ['easeIn', 'easeOut', 'easeInOut'],
+              }
+            : { repeat: Infinity, duration: 2.2, ease: 'easeInOut' }
         }
         style={{
           filter: 'drop-shadow(0 9px 12px rgba(65, 42, 12, 0.28))',

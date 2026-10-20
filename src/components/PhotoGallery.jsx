@@ -6,12 +6,6 @@ import TornEdge from './TornEdge.jsx';
 // Default curated wedding gallery images with reliable fallback
 const DEFAULT_IMAGES = [
   {
-    id: 1,
-    src: '/assets/image1.avif',
-    alt: 'Bethelhem and Ermias cherished moment 1',
-    featured: true, // Sticky first image — always starts here
-  },
-  {
     id: 2,
     src: '/assets/image2.avif',
     alt: 'Bethelhem and Ermias cherished moment 2',
@@ -45,6 +39,16 @@ const DEFAULT_IMAGES = [
     id: 8,
     src: '/assets/image8.avif',
     alt: 'Bethelhem and Ermias cherished moment 8',
+  },
+  {
+    id: 9,
+    src: '/assets/image9.avif',
+    alt: 'Bethelhem and Ermias cherished moment 9',
+  },
+  {
+    id: 10,
+    src: '/assets/image10.avif',
+    alt: 'Bethelhem and Ermias cherished moment 10',
   },
 ];
 
@@ -83,7 +87,7 @@ const slideVariants = {
 
 export default function PhotoGallery({ images = DEFAULT_IMAGES }) {
   const { t } = useTranslation();
-  // Always start on image1 (index 0 — the sticky/featured first photo)
+  // Start on the first image in the gallery.
   const [[currentIndex, direction], setPage] = useState([0, 0]);
   const [isHovered, setIsHovered] = useState(false);
   const [isInteracting, setIsInteracting] = useState(false);
