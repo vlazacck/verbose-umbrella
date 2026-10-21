@@ -6,6 +6,18 @@ import TornEdge from './TornEdge.jsx';
 // Default curated wedding gallery images with reliable fallback
 const DEFAULT_IMAGES = [
   {
+    id: 11,
+    src: '/assets/image11.avif',
+    alt: 'Ermias and Bethelhem cherished moment 11',
+    fit: true,
+  },
+  {
+    id: 12,
+    src: '/assets/image12.avif',
+    alt: 'Ermias and Bethelhem cherished moment 12',
+    fit: true,
+  },
+  {
     id: 2,
     src: '/assets/image2.webp',
     alt: 'Ermias and Bethelhem cherished moment 2',
@@ -262,7 +274,8 @@ export default function PhotoGallery({ images = DEFAULT_IMAGES }) {
                         e.target.src = '/assets/wedding.avif';
                       }
                     }}
-                    className="w-full h-full object-cover select-none pointer-events-none"
+                    className={`h-full w-full select-none pointer-events-none ${currentImage.fit ? 'object-contain' : 'object-cover'
+                      }`}
                   />
                 </motion.div>
               </AnimatePresence>
@@ -352,13 +365,12 @@ export default function PhotoGallery({ images = DEFAULT_IMAGES }) {
                     goToSlide(idx);
                   }}
                   aria-label={t('gallery.goToSlide', { index: idx + 1, defaultValue: `Go to photo ${idx + 1}` })}
-                  className={`relative rounded-lg overflow-hidden transition-all duration-200 flex-shrink-0 ${
-                    isActive
+                  className={`relative rounded-lg overflow-hidden transition-all duration-200 flex-shrink-0 ${isActive
                       ? 'w-14 sm:w-16 h-10 sm:h-12 ring-2 ring-gold scale-105 shadow-md'
                       : isFeatured
-                      ? 'w-14 sm:w-16 h-10 sm:h-12 ring-2 ring-gold/60 shadow opacity-90 hover:opacity-100 hover:scale-105'
-                      : 'w-12 sm:w-14 h-9 sm:h-10 opacity-60 hover:opacity-100 hover:scale-100'
-                  }`}
+                        ? 'w-14 sm:w-16 h-10 sm:h-12 ring-2 ring-gold/60 shadow opacity-90 hover:opacity-100 hover:scale-105'
+                        : 'w-12 sm:w-14 h-9 sm:h-10 opacity-60 hover:opacity-100 hover:scale-100'
+                    }`}
                 >
                   <img
                     src={img.src}
@@ -379,7 +391,7 @@ export default function PhotoGallery({ images = DEFAULT_IMAGES }) {
                   {isFeatured && !isActive && (
                     <div className="absolute top-0.5 right-0.5 w-3 h-3 flex items-center justify-center">
                       <svg viewBox="0 0 24 24" className="w-full h-full fill-gold drop-shadow" aria-hidden="true">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
                       </svg>
                     </div>
                   )}
