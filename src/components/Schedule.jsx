@@ -143,14 +143,18 @@ export default function Schedule() {
             >
               {/* Time — right-aligned */}
               <span
-                className="font-display text-right"
+                className="font-display text-right whitespace-pre-line"
                 style={{
                   fontSize: 'clamp(1.4rem, 3vw, 1.8rem)',
                   color: '#2D2D2D',
                   fontWeight: 500,
+                  whiteSpace: 'pre-line',
+                  lineHeight: 1.25,
                 }}
               >
-                {item.time}
+                {typeof item.time === 'string' && !item.time.includes('\n')
+                  ? item.time.replace(/^(\d{1,2}:\d{2})\s+(.+)$/, '$1\n$2')
+                  : item.time}
               </span>
 
               {/* Diamond marker */}
