@@ -7,7 +7,8 @@ export default function Location() {
   const { t } = useTranslation();
 
   const mapsUrl =
-    'https://www.google.com/maps?q=Kotebe+02+mulu+wengel+church&ll=9.0337967,38.8242241&output=embed&z=18';
+    'https://www.google.com/maps?q=9.030339,38.836892&ll=9.030339,38.836892&z=19&output=embed';
+  const mapsExternalUrl = 'https://maps.app.goo.gl/gRxsnn9caZCYmRGU8?g_st=ic';
 
   return (
     <section
@@ -100,6 +101,28 @@ export default function Location() {
             referrerPolicy="no-referrer-when-downgrade"
             allowFullScreen
           />
+          <div className="mt-4">
+            <a
+              href={mapsExternalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-gold bg-gold/10 hover:bg-gold hover:text-white text-gold font-body text-sm font-medium transition-all duration-300 shadow-sm relative z-[35]"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>{t('location.openInMaps')}</span>
+            </a>
+          </div>
         </motion.div>
       </div>
 
