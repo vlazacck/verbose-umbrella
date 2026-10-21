@@ -112,7 +112,7 @@ export default function Location() {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-4 h-4"
+                className="w-4 h-4 text-[#EA4335] shrink-0"
               >
                 <path
                   fillRule="evenodd"
