@@ -1,63 +1,104 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef, useLayoutEffect, useState, useCallback } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import TornEdge from './TornEdge.jsx';
-import SectionFlowers from './SectionFlowers.jsx';
 
 export default function Schedule() {
   const { t } = useTranslation();
-  const items = t('schedule.items', { returnObjects: true });
+  const items = t('schedule.items', { returnObjects: true }) || [];
 
-  const sectionRef = useRef(null);
   const olRef = useRef(null);
-  const itemRefs = useRef([]);
+  const firstDiamondRef = useRef(null);
+  const lastDiamondRef = useRef(null);
 
   // startY / endY are the rose's top offset inside the <ol>
   const [startY, setStartY] = useState(0);
-  const [endY, setEndY] = useState(300);
+  const [endY, setEndY] = useState(0);
 
   const ROSE_SIZE = 52; // px
 
-  useEffect(() => {
-    const measure = () => {
-      if (!olRef.current || itemRefs.current.length === 0) return;
+  const measure = useCallback(() => {
+    if (!olRef.current || !firstDiamondRef.current || !lastDiamondRef.current) return;
+
+    // Calculate exact vertical center relative to ol, immune to any CSS transforms
+    const getMarkerCenter = (elem) => {
+      let top = 0;
+      let curr = elem;
+      let foundOl = false;
+      while (curr) {
+        if (curr === olRef.current) {
+          foundOl = true;
+          break;
+        }
+        top += curr.offsetTop;
+        curr = curr.offsetParent;
+      }
+
+      if (foundOl) {
+        return top + elem.offsetHeight / 2;
+      }
+
+      // Fallback in case offsetParent hierarchy differs
+      const elemRect = elem.getBoundingClientRect();
       const olRect = olRef.current.getBoundingClientRect();
-      const firstLi = itemRefs.current[0];
-      const lastLi = itemRefs.current[itemRefs.current.length - 1];
-      if (!firstLi || !lastLi) return;
-
-      // vertical centre of first & last row, relative to ol
-      const firstCenter =
-        firstLi.getBoundingClientRect().top +
-        firstLi.getBoundingClientRect().height / 2 -
-        olRect.top;
-      const lastCenter =
-        lastLi.getBoundingClientRect().top +
-        lastLi.getBoundingClientRect().height / 2 -
-        olRect.top;
-
-      // offset so the rose image centre aligns with the row centre
-      setStartY(firstCenter - ROSE_SIZE / 2);
-      setEndY(lastCenter - ROSE_SIZE / 2);
+      return elemRect.top + elemRect.height / 2 - olRect.top;
     };
 
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
+    const firstCenter = getMarkerCenter(firstDiamondRef.current);
+    const lastCenter = getMarkerCenter(lastDiamondRef.current);
+
+    // Offset so the rose image centre aligns precisely with the diamond centre
+    setStartY(firstCenter - ROSE_SIZE / 2);
+    setEndY(lastCenter - ROSE_SIZE / 2);
   }, []);
 
-  // Track scroll progress as the section moves through the viewport
+  useLayoutEffect(() => {
+    measure();
+
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(measure);
+    }
+
+    let ro;
+    if (typeof ResizeObserver !== 'undefined' && olRef.current) {
+      ro = new ResizeObserver(() => measure());
+      ro.observe(olRef.current);
+    }
+
+    window.addEventListener('resize', measure);
+    return () => {
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [items, measure]);
+
+  // Track scroll progress as the timeline list moves through the viewport
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start 0.65', 'end 0.65'],
+    target: olRef,
+    offset: ['start 0.7', 'end 0.5'],
   });
 
-  // Rose Y goes from first-item centre → last-item centre
-  const roseY = useTransform(scrollYProgress, [0, 1], [startY, endY]);
+  // Smooth out raw scroll steps into a fluid glide
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 25,
+    restDelta: 0.001,
+  });
+
+  // Rose Y goes from first diamond centre -> last diamond centre, clamped so it never passes the diamond
+  const roseY = useTransform(smoothProgress, [0, 1], [startY, endY], {
+    clamp: true,
+  });
+
+  // Vertical line connecting diamond 1 to diamond 3
+  const lineTop = startY > 0 ? `${startY + ROSE_SIZE / 2}px` : '0px';
+  const lineBottom =
+    endY > 0 && olRef.current
+      ? `${Math.max(0, olRef.current.offsetHeight - (endY + ROSE_SIZE / 2))}px`
+      : '0px';
 
   return (
     <section
-      ref={sectionRef}
       className="relative bg-[#F8F9FA] px-4 sm:px-6 pt-10 sm:pt-12 pb-28 sm:pb-32 text-center"
     >
       {/* ── Title ── */}
@@ -77,18 +118,20 @@ export default function Schedule() {
       {/* ── Timeline wrapper ── */}
       <div className="relative z-[40] mx-auto mt-6 sm:mt-8 w-full" style={{ maxWidth: 'clamp(320px, 55vw, 520px)' }}>
 
-        {/* Vertical line (behind everything) */}
+        {/* Vertical line (runs cleanly between first and last diamond) */}
         <div
           className="absolute"
           aria-hidden="true"
           style={{
             left: 'calc(35% + 0.75rem + 8px)',
             transform: 'translateX(-50%)',
-            top: 0,
-            bottom: 0,
+            top: lineTop,
+            bottom: lineBottom,
             width: '1px',
             background:
-              'linear-gradient(to bottom, transparent, rgba(197,160,89,0.55) 8%, rgba(197,160,89,0.55) 92%, transparent)',
+              startY > 0
+                ? 'rgba(197,160,89,0.55)'
+                : 'linear-gradient(to bottom, transparent, rgba(197,160,89,0.55) 8%, rgba(197,160,89,0.55) 92%, transparent)',
           }}
         />
 
@@ -125,13 +168,8 @@ export default function Schedule() {
           </motion.div>
 
           {items.map((item, idx) => (
-            <motion.li
+            <li
               key={item.label}
-              ref={(el) => (itemRefs.current[idx] = el)}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.35 }}
-              transition={{ duration: 0.6, delay: idx * 0.1 }}
               style={{
                 position: 'relative',
                 display: 'grid',
@@ -142,7 +180,11 @@ export default function Schedule() {
               }}
             >
               {/* Time — right-aligned */}
-              <span
+              <motion.span
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{ duration: 0.6, delay: idx * 0.1 }}
                 className="font-display text-right whitespace-pre-line"
                 style={{
                   fontSize: 'clamp(1.4rem, 3vw, 1.8rem)',
@@ -155,10 +197,15 @@ export default function Schedule() {
                 {typeof item.time === 'string' && !item.time.includes('\n')
                   ? item.time.replace(/^(\d{1,2}:\d{2})\s+(.+)$/, '$1\n$2')
                   : item.time}
-              </span>
+              </motion.span>
 
               {/* Diamond marker */}
-              <span
+              <motion.span
+                ref={idx === 0 ? firstDiamondRef : idx === items.length - 1 ? lastDiamondRef : null}
+                initial={{ opacity: 0, scale: 0.6 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
                 aria-hidden="true"
                 style={{
                   position: 'relative',
@@ -181,10 +228,14 @@ export default function Schedule() {
                     boxShadow: '0 0 0 2px rgba(197,160,89,0.3)',
                   }}
                 />
-              </span>
+              </motion.span>
 
               {/* Label — left-aligned */}
-              <span
+              <motion.span
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{ duration: 0.6, delay: idx * 0.1 }}
                 className="font-body text-left"
                 style={{
                   fontSize: 'clamp(1.3rem, 2.5vw, 1.5rem)',
@@ -193,8 +244,8 @@ export default function Schedule() {
                 }}
               >
                 {item.label}
-              </span>
-            </motion.li>
+              </motion.span>
+            </li>
           ))}
         </ol>
       </div>
