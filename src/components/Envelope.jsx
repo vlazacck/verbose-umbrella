@@ -97,7 +97,7 @@ export default function Envelope({ onOpening, onOpen }) {
           className="wedding-envelope-button group relative block cursor-pointer rounded-[22px] text-left outline-none focus-visible:ring-2 focus-visible:ring-amber-700 focus-visible:ring-offset-4 disabled:cursor-default"
           style={{
             width: 'min(88vw, 900px)',
-            maxHeight: '82svh',
+            maxHeight: '82vh',
             aspectRatio: '1.52 / 1',
             perspective: '1200px',
             transformStyle: 'preserve-3d',
@@ -129,8 +129,8 @@ export default function Envelope({ onOpening, onOpen }) {
             @media (max-width: 639px) {
               .wedding-envelope-button {
                 width: min(86vw, 390px) !important;
-                height: min(74svh, 660px) !important;
-                max-height: 74svh !important;
+                height: min(74vh, 660px) !important;
+                max-height: 74vh !important;
                 aspect-ratio: auto !important;
               }
             }
@@ -817,7 +817,9 @@ function Monogram({ id, mobile = false }) {
             lineHeight: '0.95',
             background: 'linear-gradient(180deg, #FDF3D8 0%, #D8B56D 45%, #9E742B 100%)',
             WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
+            color: 'transparent',
             filter: 'drop-shadow(0 1px 1px rgba(62, 43, 19, 0.45))',
           }}
         >
