@@ -240,7 +240,7 @@ export default function Wishes() {
         }
         @media (max-width: 640px) {
           .wishes-track {
-            animation-duration: 95s;
+            animation-duration: 115s;
           }
         }
       `}</style>
