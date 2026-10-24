@@ -283,7 +283,7 @@ export default function Wishes() {
         {/* Sliding Carousel Track Container OR Empty State */}
         {wishes.length > 0 ? (
           <div
-            className="relative mt-10 sm:mt-12 w-full overflow-hidden"
+            className="relative z-10 mt-10 sm:mt-12 w-full overflow-hidden"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={() => setIsPaused(true)}
@@ -299,7 +299,7 @@ export default function Wishes() {
                   key={`${item.id}-${idx}`}
                   className="w-[280px] sm:w-[320px] md:w-[350px] shrink-0 mx-3 sm:mx-4"
                 >
-                  <div className="h-full min-h-[220px] sm:min-h-[240px] bg-[#F5EFEB] rounded-2xl p-6 sm:p-7 border border-[#EADBCC] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between text-left relative group">
+                  <div className="h-full min-h-[220px] sm:min-h-[240px] bg-[#F5EFEB] rounded-2xl p-6 sm:p-7 border border-gold/50 shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between text-left relative group">
                     {/* Subtle decorative quotation mark in background */}
                     <span
                       aria-hidden="true"
@@ -310,18 +310,18 @@ export default function Wishes() {
 
                     <div>
                       {/* Guest Name */}
-                      <h3 className="font-display font-semibold text-base sm:text-lg text-ink tracking-wide">
+                      <h3 className="font-display font-semibold text-base sm:text-lg text-[#1A1917] tracking-wide">
                         {item.name}
                       </h3>
 
                       {/* Message Quote */}
-                      <p className="mt-3 font-body italic text-sm sm:text-base text-ink leading-relaxed relative z-10">
+                      <p className="mt-3 font-body italic text-sm sm:text-base text-[#1A1917] leading-relaxed relative z-10">
                         "{item.message}"
                       </p>
                     </div>
 
                     {/* Optional date or heart signet */}
-                    <div className="mt-4 pt-3 border-t border-gold/20 flex items-center justify-between text-xs text-ink/80 font-body">
+                    <div className="mt-4 pt-3 border-t border-gold/40 flex items-center justify-between text-xs text-[#3B3328] font-body">
                       <span>{item.date || 'Ermias & Bethelhem'}</span>
                       <span className="text-gold text-sm">❧</span>
                     </div>
